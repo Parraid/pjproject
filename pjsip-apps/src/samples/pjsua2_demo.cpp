@@ -176,7 +176,8 @@ void MyCall::onCallMediaState(OnCallMediaStateParam &prm)
     AudioMedia aud_med;
     AudioMedia& play_dev_med =
         MyEndpoint::instance().audDevManager().getPlaybackDevMedia();
-
+    AudioMedia& capture_dev_med =
+        MyEndpoint::instance().audDevManager().getCaptureDevMedia();
         std::cout << "Getting playback dev media" << std::endl;
 
     try {
@@ -191,7 +192,7 @@ void MyCall::onCallMediaState(OnCallMediaStateParam &prm)
         wav_player = new AudioMediaPlayer();
         try {
             wav_player->createPlayer(
-                "../../../../tests/pjsua/wavs/input.16.wav", 0);
+                "C:/src/PJSIP_Trunk/pjproject/tests/pjsua/wavs/input.16.wav", 0);
         } catch (...) {
             std::cout << "Failed opening wav file" << std::endl;
             delete wav_player;
@@ -240,10 +241,13 @@ static void mainProg1(MyEndpoint &ep)
     ep_cfg.logConfig.level = 4;
     ep.libInit( ep_cfg );
 
-    // Transport
+	// Transport
     TransportConfig tcfg;
     tcfg.port = 6000;
     ep.transportCreate(PJSIP_TRANSPORT_UDP, tcfg);
+    tcfg.tlsConfig.certFile = "C:/src/NRG_224/code/EngageLibrary/rtsFactoryDefaultEngage.pem";
+    tcfg.tlsConfig.privKeyFile = "C:/src/NRG_224/code/EngageLibrary/rtsFactoryDefaultEngage.key";
+    ep.transportCreate(PJSIP_TRANSPORT_TLS, tcfg);
 
     // Start library
     ep.libStart();
@@ -251,14 +255,17 @@ static void mainProg1(MyEndpoint &ep)
 
     // Add account
     AccountConfig acc_cfg;
-    acc_cfg.idUri = "sip:401@pjsip.org";
-    acc_cfg.regConfig.registrarUri = "sip:sip.pjsip.org";
-
+    acc_cfg.idUri = "sip:1-573-892-9062@sip.telnyx.com";
+    acc_cfg.regConfig.registrarUri = "sip:sip.telnyx.com";
+    acc_cfg.mediaConfig.srtpUse = PJMEDIA_SRTP_MANDATORY;
+    acc_cfg.mediaConfig.srtpSecureSignaling = 0;
+    
 #if PJSIP_HAS_DIGEST_AKA_AUTH
     AuthCredInfo aci("Digest", "*", "test", PJSIP_CRED_DATA_EXT_AKA | PJSIP_CRED_DATA_PLAIN_PASSWD, "passwd");
     aci.akaK = "passwd";
 #else
-    AuthCredInfo aci("digest", "*", "401", 0, "pw401");
+    //AuthCredInfo aci("digest", "*", "parraid2023", 0, "P@rraid1");
+    AuthCredInfo aci("digest", "*", "emmanuelrobles9444648", 0, "jvWnOBFp");
 #endif
 
     acc_cfg.sipConfig.authCreds.push_back(PJSUA2_MOVE(aci));
@@ -277,10 +284,27 @@ static void mainProg1(MyEndpoint &ep)
     CallOpParam prm(true);
     prm.opt.audioCount = 1;
     prm.opt.videoCount = 0;
-    call->makeCall("sip:402@sip.pjsip.org", prm);
+
+
+    call->makeCall("sip:14046260298@sip.telnyx.com", prm);
     
     // Hangup all calls
-    pj_thread_sleep(4000);
+    pj_thread_sleep(8000);
+    for (;;)
+    {
+        char option[10];
+        puts("Hit h to hangup\n");
+        if (fgets(option, sizeof(option), stdin) == NULL) {
+            puts("EOF while reading stdin, will quit now..");
+            break;
+        }
+
+        if (option[0] == 'h')
+        {
+            puts("*** hanging up call now'\n'");
+            break;
+        }
+    }
     ep.hangupAllCalls();
     pj_thread_sleep(4000);
     

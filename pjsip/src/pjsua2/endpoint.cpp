@@ -21,6 +21,8 @@
 #include <pjsua2/presence.hpp>
 #include <algorithm>
 #include "util.hpp"
+#include <openssl/provider.h>
+#include <openssl/evp.h>
 
 using namespace pj;
 using namespace std;
@@ -1940,6 +1942,52 @@ Version Endpoint::libVersion() const
     ver.numeric = PJ_VERSION_NUM;
     return ver;
 }
+
+void list_providers() {
+    // C-style callback function
+    auto callback = [](OSSL_PROVIDER* prov, void* arg) {
+        const char* name = OSSL_PROVIDER_get0_name(prov);
+        if (name)
+            printf("Loaded provider: %s\n", name);
+        return 1;
+    };
+
+    // OSSL_PROVIDER_do_all expects a function pointer (not capturing lambda)
+    // So we must cast to a function pointer without captures
+    OSSL_PROVIDER_do_all(nullptr, callback, nullptr);
+}
+
+bool Endpoint::enableFips()
+{
+    OSSL_PROVIDER* base = OSSL_PROVIDER_load(NULL, "base");
+    OSSL_PROVIDER* fips = OSSL_PROVIDER_load(NULL, "fips");
+    if (fips == NULL)
+    {
+        return false;
+    }
+    
+    // Enable FIPS mode for the default library context
+    if (!EVP_default_properties_enable_fips(NULL, 1))
+    {
+        printf("Failed to load Fips provider\n");
+        return false;
+    }
+    list_providers();
+    return true;
+}
+
+bool Endpoint::loadDefaultProvider()
+{
+    OSSL_PROVIDER* base = OSSL_PROVIDER_load(NULL, "base");
+    OSSL_PROVIDER* defaultModule = OSSL_PROVIDER_load(NULL, "default");
+    if (defaultModule == nullptr)
+    {
+        return false;
+    }
+    
+    return true;
+}
+
 
 void Endpoint::libCreate() PJSUA2_THROW(Error)
 {

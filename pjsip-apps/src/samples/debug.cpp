@@ -27,5 +27,5 @@
  * E.g.:
  *  #include "playfile.c"
  */
-#include "icedemo.c"
 
+#include "pjsua2_demo.cpp"

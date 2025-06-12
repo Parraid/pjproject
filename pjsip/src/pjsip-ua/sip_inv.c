@@ -4485,7 +4485,20 @@ static pj_bool_t inv_check_secure_dlg(pjsip_inv_session *inv,
         c = (pjsip_contact_hdr*)
             pjsip_msg_find_hdr(msg,PJSIP_H_CONTACT, NULL);
         if (!(c && c->uri && PJSIP_URI_SCHEME_IS_SIPS(c->uri)))
-            status = PJSIP_ESESSIONINSECURE;
+        {
+            //const pj_str_t* t = pjsip_uri_get_scheme(c->uri);
+            //char bufContact[PJSIP_MAX_URL_SIZE];
+            //int lenContact= c->uri->vptr->p_print(PJSIP_URI_IN_CONTACT_HDR, c->uri, bufContact, sizeof(bufContact));
+            //PJ_LOG(4, (inv->obj_name," contact uri is %s full", bufContact));
+            //pj_log_write(4, t->ptr, t->slen);
+            pjsip_sip_uri* sip_route_uri = (pjsip_sip_uri*)
+                pjsip_uri_get_uri(c->uri);
+            const pj_str_t t_param = sip_route_uri->transport_param;
+            if (pj_stricmp2(&t_param, "tls")!=0)
+            {
+                status = PJSIP_ESESSIONINSECURE;
+            }
+        }
 
         /* Check top Record-Route header */
         if (status == PJ_SUCCESS) {

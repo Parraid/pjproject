@@ -153,7 +153,7 @@ namespace pjsua2xamarin
             try
             {
                 VideoPreviewOpParam param = new VideoPreviewOpParam();
-                param.window.handle.setWindow(hwnd.ToInt64());
+                //param.window.handle.setWindow(hwnd.ToInt64());
 
                 // Video render operation needs to be invoked from non-main-thread.
                 new Thread(() =>
@@ -190,7 +190,7 @@ namespace pjsua2xamarin
                         checkThread("pjsua2.updatePreviewWindow");
 
                         VideoWindowHandle handle = new VideoWindowHandle();
-                        handle.handle.setWindow(hwnd.ToInt64());
+                        //handle.handle.setWindow(hwnd.ToInt64());
 
                         VideoWindow window = vp.getVideoWindow();
                         window.setWindow(handle);

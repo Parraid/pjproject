@@ -7,6 +7,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>14.0.22823.1</_ProjectFileVersion>
+    <IncludePath>$(SolutionDir)..\packages\OpenSSl\xtrn\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\packages\OpenSSL\xtrn\lib\win32\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
