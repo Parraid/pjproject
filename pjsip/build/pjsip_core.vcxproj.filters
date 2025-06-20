@@ -224,4 +224,7 @@
   <ItemGroup>
     <Text Include="..\..\INSTALL.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

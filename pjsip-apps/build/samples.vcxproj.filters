@@ -123,5 +123,6 @@
   <ItemGroup>
     <None Include="Samples-vc.mak" />
     <None Include="Samples.mak" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

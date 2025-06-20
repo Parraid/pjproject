@@ -1076,7 +1076,7 @@ static int xname_cmp(const X509_NAME **a, const X509_NAME **b) {
 #if !defined(OPENSSL_NO_DH)
 
 static void set_option(const pj_ssl_sock_t* ssock, SSL_CTX* ctx) {
-    unsigned long options = SSL_OP_CIPHER_SERVER_PREFERENCE |
+    uint64_t options = SSL_OP_CIPHER_SERVER_PREFERENCE |
 #if !defined(OPENSSL_NO_ECDH) && OPENSSL_VERSION_NUMBER >= 0x10000000L
         SSL_OP_SINGLE_ECDH_USE |
 #endif

@@ -62,5 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="JBTEST.DAT" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

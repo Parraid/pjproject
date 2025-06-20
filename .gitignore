@@ -87,3 +87,6 @@ tests/fuzz/*.o
 cov-int/
 getversion.mak
 configure.out
+
+# Nuget stuff
+packages/
